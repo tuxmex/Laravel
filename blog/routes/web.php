@@ -15,16 +15,16 @@ use App\Http\Controllers\DashboardController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('hello', function(){
-    return view('hello');
-});
-
-Route::get('dashboard', [DashboardController::class, 'index']);
+Route::get('/', [DashboardController::class, 'index']);
 
 Route::get('create-category', [CategoryController::class, 'create']);
 
 Route::post('post-category-form', [CategoryController::class, 'store']);
+
+Route::get('all-categories', [CategoryController::class, 'index']);
+
+Route::get('edit-category/{id}', [CategoryController::class, 'edit']);
+
+Route::post('update-category-form/{id}', [CategoryController::class, 'update']);
+
+Route::get('delete-category/{id}', [CategoryController::class, 'destroy']);

@@ -81,9 +81,16 @@ class CategoryController extends Controller
      * @param  \App\Models\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Category $category)
+    public function update(Request $request, $id)
     {
         //
+        $category = Category::find($id);
+        $category->name = $request->input('categoryName');
+        if($category->update()){
+            return redirect()->back()->with('success', 'Updated successfully!');
+        }
+
+        return redirect()->back()->with('failed', 'Could not update!'); 
     }
 
     /**
@@ -92,8 +99,14 @@ class CategoryController extends Controller
      * @param  \App\Models\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Category $category)
+    public function destroy($id)
     {
         //
+        if(Category::destroy($id)){
+            return redirect()->back()->with('success-destroy', 'Deleted successfully!');
+        }
+
+        return redirect()->back()->with('failed-destroy', 'Could not delete!'); 
+  
     }
 }

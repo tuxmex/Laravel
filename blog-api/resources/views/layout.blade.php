@@ -20,6 +20,8 @@
     <!-- Custom styles for this template-->
     <link href="{{ URL::to('css/sb-admin.css') }}" rel="stylesheet">
 
+    <script src="{{ URL::to('ckeditor/ckeditor.js')}}"></script>
+
 </head>
 
 <body id="page-top">
@@ -107,6 +109,20 @@
 
             </div>
         </li>
+
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-fw fa-folder"></i>
+                <span>Blog Post</span>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+
+                <a class="dropdown-item" href="{{ URL::to('create-blog-post') }}"> Create Blog Post</a>
+                <a class="dropdown-item" href="{{ URL::to('all-blog-posts') }}"> All Blog Posts </a>
+
+            </div>
+        </li>
+
         <li class="nav-item">
             <a class="nav-link" href="charts.html">
                 <i class="fas fa-fw fa-chart-area"></i>
@@ -187,6 +203,10 @@
 <!-- Demo scripts for this page-->
 <script src="{{ URL::to('js/demo/datatables-demo.js') }}"></script>
 <script src="{{ URL::to('js/demo/chart-area-demo.js') }}"></script>
+
+<script>
+    CKEDITOR.replace('postDetails');
+</script>
 
 </body>
 

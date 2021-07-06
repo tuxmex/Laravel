@@ -18,7 +18,7 @@
     </div>
     @endif
 
-    <form action="{{ URL::to('post-category-form')}}" method="post">
+    <form action="{{ URL::to('update-category-form')}}/{{$category->id}}" method="post">
       @csrf
         <div class="form-group">
           <label for="categoryName">Category Name:</label>

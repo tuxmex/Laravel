@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BlogPost;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class BlogPostController extends Controller
@@ -15,6 +16,8 @@ class BlogPostController extends Controller
     public function index()
     {
         //
+        $blogPosts = BlogPost::all();
+        return view('blog.index', compact('blogPosts'));
     }
 
     /**
@@ -25,6 +28,9 @@ class BlogPostController extends Controller
     public function create()
     {
         //
+
+        $categories = Category::all();
+        return view('blog.create', compact('categories'));
     }
 
     /**
@@ -36,6 +42,27 @@ class BlogPostController extends Controller
     public function store(Request $request)
     {
         //
+        $blogPost = new BlogPost();
+        $blogPost->title = $request->input('postTitle');
+        $blogPost->details = $request->input('postDetails');
+        $blogPost->category_id = $request->input('postCategory');
+        $blogPost->user_id = 0;
+        if($blogPost->save()){
+            $photo = $request->file('featuredPhoto');
+            if($photo!=null){
+                $ext = $photo->getClientOriginalExtension();
+                $fileName = rand(10000, 50000).'.'.$ext;
+                if($ext=='jpg' || $ext=='png'){
+                    if($photo->move(public_path(), $fileName)){
+                        $blogPost = BlogPost::find($blogPost->id);
+                        $blogPost->featured_image_url = url('/').'/'.$fileName;
+                        $blogPost->save();
+                    }
+                }
+            }
+            return redirect()->back()->with('success','Blog post information saved successfully!');
+        }
+        return redirect()->back()->with('failed','Blog post information could not save!');
     }
 
     /**
@@ -55,9 +82,11 @@ class BlogPostController extends Controller
      * @param  \App\Models\BlogPost  $blogPost
      * @return \Illuminate\Http\Response
      */
-    public function edit(BlogPost $blogPost)
-    {
+    public function edit($id){
         //
+        $blogPost = BlogPost::find($id);
+        $categories = Category::all();
+        return view('blog.edit', compact('blogPost', 'categories'));
     }
 
     /**
@@ -67,9 +96,32 @@ class BlogPostController extends Controller
      * @param  \App\Models\BlogPost  $blogPost
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, BlogPost $blogPost)
+    public function update(Request $request, $id)
     {
         //
+        $blogPost = BlogPost::find($id);
+        $blogPost->title = $request->input('postTitle');
+        $blogPost->details = $request->input('postDetails');
+        $blogPost->category_id = $request->input('postCategory');
+        $blogPost->user_id = 0;
+        if($blogPost->update()){
+            $photo = $request->file('featuredPhoto');
+            if($photo!=null){
+                $ext = $photo->getClientOriginalExtension();
+                $fileName = rand(10000, 50000).'.'.$ext;
+                if($ext=='jpg' || $ext=='png'){
+                    if($photo->move(public_path(), $fileName)){
+                        $blogPost = BlogPost::find($blogPost->id);
+                        $blogPost->featured_image_url = url('/').'/'.$fileName;
+                        $blogPost->update();
+                    }
+                }
+            }
+            return redirect()->back()->with('success','Blog post information updated successfully!');
+        }
+        return redirect()->back()->with('failed','Blog post information could not update!');
+    
+        
     }
 
     /**
@@ -78,8 +130,13 @@ class BlogPostController extends Controller
      * @param  \App\Models\BlogPost  $blogPost
      * @return \Illuminate\Http\Response
      */
-    public function destroy(BlogPost $blogPost)
+    public function destroy($id)
     {
         //
+        if(BlogPost::destroy($id)){
+            return redirect()->back()->with('destroy','Blog post information deleted successfully!');
+        }
+        return redirect()->back()->with('destroy-failed','Blog post information delete not update!');
+ 
     }
 }
